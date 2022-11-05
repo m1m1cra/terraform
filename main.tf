@@ -13,13 +13,23 @@ provider "yandex" {
   zone      = "ru-central1-a"
 }
 
+#data "yandex_vpc_subnet" "lan-subnet-a" {
+#  name = "lan-subnet-a"
+#}
+
+
+resource "yandex_vpc_network" "lab-net" {
+  name = "lab-network"
+}
+
+resource "yandex_vpc_subnet" "lan-subnet-a" {
+  v4_cidr_blocks = ["10.2.0.0/16"]
+  zone           = "ru-central1-a"
+  network_id     = "${yandex_vpc_network.lab-net.id}"
+}
 
 data "yandex_compute_image" "last_ubuntu" {
   family = "ubuntu-2204-lts"  
-}
-
-data "yandex_vpc_subnet" "default_a" {
-  name = "default-ru-central1-a" 
 }
 
 
@@ -39,7 +49,7 @@ resource "yandex_compute_instance" "default" {
   }
 
   network_interface {
-    subnet_id = data.yandex_vpc_subnet.default_a.subnet_id
+    subnet_id = resource.yandex_vpc_subnet.lan-subnet-a.id
     nat = true 
   }
 }

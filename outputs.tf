@@ -3,7 +3,7 @@ output "default_instance_public_ip" {
 }
 
 output "subnet_id" {
-    value = data.yandex_vpc_subnet.default_a.subnet_id
+    value = resource.yandex_vpc_subnet.lan-subnet-a.id
 }
 
 output "last_ubuntu" {
